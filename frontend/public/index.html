@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kobo Terminal — Paper Trading Demo</title>
+<link rel="stylesheet" href="style.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">K</div>
+    <h1 class="display">Kobo Terminal</h1>
+    <span class="tag mono">PAPER TRADING — DEMO</span>
+  </div>
+  <div class="wallet">
+    <div>
+      <div class="label">Portfolio value</div>
+      <div class="value mono" id="portfolioValue">₦0.00</div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker-wrap">
+  <div class="ticker-track mono" id="tickerTrack"></div>
+</div>
+
+<main>
+  <aside class="watchlist" id="watchlist"></aside>
+
+  <section class="chart-panel">
+    <div class="chart-header">
+      <div>
+        <h2 class="display" id="stockSymbol">—</h2>
+        <p id="stockName">—</p>
+      </div>
+      <div class="price-block">
+        <div class="big mono" id="stockPrice">₦0.00</div>
+        <div class="delta mono" id="stockDelta">0.00%</div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <canvas id="priceChart"></canvas>
+    </div>
+
+    <div class="trade-panel">
+      <div class="trade-top">
+        <span>You own <span class="mono" id="ownedQty">0</span> shares</span>
+        <span>Cash: <span class="mono" id="cashDisplay">₦0.00</span></span>
+      </div>
+      <div class="trade-controls">
+        <div class="qty-input">
+          <button id="qtyMinus">−</button>
+          <input type="number" id="qtyInput" value="1" min="1" />
+          <button id="qtyPlus">+</button>
+        </div>
+        <button class="btn btn-buy" id="buyBtn">▲ Buy</button>
+        <button class="btn btn-sell" id="sellBtn">▼ Sell</button>
+      </div>
+      <div class="est-cost mono" id="estCost">Est. cost: ₦0.00</div>
+      <div class="error-msg mono" id="errorMsg"></div>
+    </div>
+  </section>
+
+  <aside class="portfolio">
+    <div class="section-title">
+      <span>Holdings</span>
+      <button class="reset-btn" id="resetBtn" title="Reset paper portfolio">⟲</button>
+    </div>
+    <div id="holdingsList"><p class="empty">No positions yet. Buy a stock to start building your paper portfolio.</p></div>
+
+    <div class="section-title" style="margin-top:24px;">Activity</div>
+    <div id="activityList"><p class="empty">No trades yet.</p></div>
+  </aside>
+</main>
+
+<script src="app.js"></script>
+</body>
+  </html>
