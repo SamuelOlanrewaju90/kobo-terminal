@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:4000";
+const API_BASE = "https://kobo-terminal.onrender.com";
 const POLL_MS = 2500;
 
 let stocks = [];
