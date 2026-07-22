@@ -17,16 +17,16 @@ app.use(express.json());
 
 // ---------- market data (in-memory, lives on the server) ----------
 const SEED_STOCKS = [
-  { symbol: "MTNN", name: "MTN Nigeria", base: 245.0 },
-  { symbol: "DANGCEM", name: "Dangote Cement", base: 495.0 },
-  { symbol: "GTCO", name: "Guaranty Trust Holding", base: 78.2 },
-  { symbol: "ZENITHBANK", name: "Zenith Bank", base: 52.4 },
-  { symbol: "BUACEMENT", name: "BUA Cement", base: 130.5 },
-  { symbol: "NESTLE", name: "Nestle Nigeria", base: 1450.0 },
-  { symbol: "ACCESSCORP", name: "Access Holdings", base: 24.1 },
-  { symbol: "AIRTELAFRI", name: "Airtel Africa", base: 2300.0 },
-  { symbol: "SEPLAT", name: "Seplat Energy", base: 5800.0 },
-  { symbol: "BUAFOODS", name: "BUA Foods", base: 420.0 },
+  { symbol: "MTNN", name: "MTN Nigeria", base: 245.0, sector: "Telecoms" },
+  { symbol: "DANGCEM", name: "Dangote Cement", base: 495.0, sector: "Industrial" },
+  { symbol: "GTCO", name: "Guaranty Trust Holding", base: 78.2, sector: "Banking" },
+  { symbol: "ZENITHBANK", name: "Zenith Bank", base: 52.4, sector: "Banking" },
+  { symbol: "BUACEMENT", name: "BUA Cement", base: 130.5, sector: "Industrial" },
+  { symbol: "NESTLE", name: "Nestle Nigeria", base: 1450.0, sector: "Consumer Goods" },
+  { symbol: "ACCESSCORP", name: "Access Holdings", base: 24.1, sector: "Banking" },
+  { symbol: "AIRTELAFRI", name: "Airtel Africa", base: 2300.0, sector: "Telecoms" },
+  { symbol: "SEPLAT", name: "Seplat Energy", base: 5800.0, sector: "Energy" },
+  { symbol: "BUAFOODS", name: "BUA Foods", base: 420.0, sector: "Consumer Goods" },
 ];
 
 function genHistory(base) {
