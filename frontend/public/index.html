@@ -28,7 +28,14 @@
 </div>
 
 <main>
-  <aside class="watchlist" id="watchlist"></aside>
+  <aside class="watchlist-panel">
+    <div class="watch-search">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="searchInput" placeholder="Search stocks..." autocomplete="off" />
+    </div>
+    <div class="category-tabs" id="categoryTabs"></div>
+    <div class="watchlist" id="watchlist"></div>
+  </aside>
 
   <section class="chart-panel">
     <div class="chart-header">
@@ -79,4 +86,5 @@
 
 <script src="app.js"></script>
 </body>
-  </html>
+        </html>
+        
