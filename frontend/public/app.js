@@ -1,4 +1,4 @@
-const API_BASE = "https://kobo-terminal.onrender.com";
+const API_BASE = "http://localhost:4000";
 const POLL_MS = 2500;
 
 let stocks = [];
@@ -6,6 +6,28 @@ let portfolio = { cash: 0, holdings: {}, activity: [], value: 0 };
 let selected = "MTNN";
 let qty = 1;
 let chart = null;
+let searchTerm = "";
+let activeCategory = "All";
+
+// ---------- favorites (persisted locally) ----------
+function loadFavorites() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem("kobo_favorites") || "[]"));
+  } catch (e) {
+    return new Set();
+  }
+}
+function saveFavorites(set) {
+  localStorage.setItem("kobo_favorites", JSON.stringify([...set]));
+}
+let favorites = loadFavorites();
+
+function toggleFavorite(symbol) {
+  if (favorites.has(symbol)) favorites.delete(symbol);
+  else favorites.add(symbol);
+  saveFavorites(favorites);
+  renderAll();
+}
 
 function fmt(n) {
   return "₦" + n.toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -64,20 +86,70 @@ function renderTicker() {
   track.innerHTML = items;
 }
 
+function getCategories() {
+  const sectors = [...new Set(stocks.map(s => s.sector).filter(Boolean))];
+  return ["All", "Favorites", ...sectors];
+}
+
+function renderCategoryTabs() {
+  const el = document.getElementById("categoryTabs");
+  const cats = getCategories();
+  el.innerHTML = cats.map(c =>
+    `<button class="cat-tab ${c === activeCategory ? 'active' : ''}" data-cat="${c}">${c}</button>`
+  ).join("");
+  el.querySelectorAll(".cat-tab").forEach(btn => {
+    btn.addEventListener("click", () => {
+      activeCategory = btn.dataset.cat;
+      renderAll();
+    });
+  });
+}
+
+function getFilteredStocks() {
+  return stocks.filter(s => {
+    if (activeCategory === "Favorites" && !favorites.has(s.symbol)) return false;
+    if (activeCategory !== "All" && activeCategory !== "Favorites" && s.sector !== activeCategory) return false;
+    if (searchTerm) {
+      const q = searchTerm.toLowerCase();
+      if (!s.symbol.toLowerCase().includes(q) && !s.name.toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+}
+
 function renderWatchlist() {
+  renderCategoryTabs();
   const el = document.getElementById("watchlist");
-  el.innerHTML = stocks.map(s => {
+  const filtered = getFilteredStocks();
+
+  if (filtered.length === 0) {
+    el.innerHTML = '<p class="empty-list">No stocks match. Try a different search or category.</p>';
+    return;
+  }
+
+  el.innerHTML = filtered.map(s => {
     const up = s.change >= 0;
     const active = s.symbol === selected ? "active" : "";
+    const isFav = favorites.has(s.symbol);
     return `<button class="stock-row ${active}" data-symbol="${s.symbol}">
       <div class="row-top">
-        <span class="sym mono">${s.symbol}</span>
+        <span class="sym-wrap">
+          <span class="star-btn ${isFav ? 'favorited' : ''}" data-star="${s.symbol}">${isFav ? '★' : '☆'}</span>
+          <span class="sym mono">${s.symbol}</span>
+        </span>
         <span class="chg mono ${up ? 'up' : 'down'}">${up ? '+' : ''}${s.change.toFixed(2)}%</span>
       </div>
       <div class="name">${s.name}</div>
       <div class="price mono">${fmt(s.price)}</div>
     </button>`;
   }).join("");
+
+  el.querySelectorAll(".star-btn").forEach(star => {
+    star.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleFavorite(star.dataset.star);
+    });
+  });
   el.querySelectorAll(".stock-row").forEach(btn => {
     btn.addEventListener("click", () => {
       selected = btn.dataset.symbol;
@@ -215,6 +287,10 @@ document.getElementById("qtyInput").addEventListener("input", (e) => {
   qty = Math.max(1, parseInt(e.target.value) || 1);
   renderChartPanel();
 });
+document.getElementById("searchInput").addEventListener("input", (e) => {
+  searchTerm = e.target.value;
+  renderWatchlist();
+});
 document.getElementById("buyBtn").addEventListener("click", () => trade("buy"));
 document.getElementById("sellBtn").addEventListener("click", () => trade("sell"));
 document.getElementById("resetBtn").addEventListener("click", resetPortfolio);
@@ -227,3 +303,4 @@ async function refresh() {
 
 refresh();
 setInterval(refresh, POLL_MS);
+    
